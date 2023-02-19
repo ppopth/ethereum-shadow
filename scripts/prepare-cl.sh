@@ -187,6 +187,7 @@ for (( node=1; node<=$NODE_COUNT; node++ )); do
     cl_data_dir $node
     el_data_dir $node
     node_ip $node
+    env="LD_LIBRARY_PATH=$(realpath ~/dest/lib64)"
     # --disable-packet-filter is necessary because it's involed in rate limiting and nodes per IP limit
     # See https://github.com/sigp/discv5/blob/v0.1.0/src/socket/filter/mod.rs#L149-L186
     args="\
@@ -207,6 +208,7 @@ beacon_node \
 "
     yq -i ".hosts.node$node.processes += { \
         \"path\": \"$LIGHTHOUSE_CMD\", \
+        \"environment\": \"$env\", \
         \"args\": \"$args\", \
         \"start_time\": $LIGHTHOUSE_BEACON_NODE_STARTTIME \
     }" $SHADOW_CONFIG_FILE
